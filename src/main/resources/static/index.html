@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ParkSmart | Smart Parking Management</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#dashboard" aria-label="ParkSmart dashboard"><span class="brand-mark">P</span><span>ParkSmart<small>SMART PARKING</small></span></a>
+    <nav aria-label="Main navigation">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#lots">Parking Lots</a>
+      <a href="#availability">Available Slots</a>
+      <a href="#bookings">Bookings</a>
+      <a href="#check-in-out">Check In/Out</a>
+    </nav>
+    <a class="button nav-action" href="#book">Book a spot <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="shell">
+    <section id="dashboard" class="view active">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">PARKING, MADE SMARTER</p>
+          <h1>Smart Parking.<br><span>Simple Booking.</span></h1>
+          <p>Find the right space, choose your time, and arrive with parking already taken care of.</p>
+          <div class="hero-actions"><a class="button button-light" href="#availability">Find Parking <span aria-hidden="true">→</span></a><a class="hero-link" href="#book">Book Now</a></div>
+          <div class="hero-proof"><span class="proof-dot"></span> Live availability across your parking lots</div>
+        </div>
+        <div class="parking-visual" aria-hidden="true">
+          <div class="visual-label"><span>LOT A</span><span class="visual-open"><i></i> LIVE</span></div>
+          <div class="parking-bays"><span class="bay bay-available">P</span><span class="bay bay-booked">P</span><span class="bay bay-available">P</span><span class="bay bay-occupied">P</span><span class="bay bay-available">P</span><span class="bay bay-selected">P</span><span class="bay bay-available">P</span><span class="bay bay-available">P</span></div>
+          <div class="visual-caption"><span>Spaces at a glance</span><b><span class="caption-dot"></span> Ready when you are</b></div>
+        </div>
+      </div>
+      <div class="section-topline"><div><p class="eyebrow">TODAY AT A GLANCE</p><h2>Parking overview</h2></div><button class="button button-outline" data-refresh><span aria-hidden="true">⟳</span> Refresh</button></div>
+      <div class="stats">
+        <article class="stat"><span class="stat-icon icon-lots" aria-hidden="true">⌂</span><span class="stat-label">Total Parking Lots</span><strong id="lot-count">-</strong><small>Across your locations</small></article>
+        <article class="stat"><span class="stat-icon icon-slots" aria-hidden="true">▦</span><span class="stat-label">Total Slots</span><strong id="slot-count">-</strong><small>Spaces in the system</small></article>
+        <article class="stat"><span class="stat-icon icon-available" aria-hidden="true">✓</span><span class="stat-label">Available Slots</span><strong id="available-count">-</strong><small>Ready to reserve</small></article>
+        <article class="stat"><span class="stat-icon icon-bookings" aria-hidden="true">↗</span><span class="stat-label">Active Bookings</span><strong id="active-count">-</strong><small>Booked or checked in</small></article>
+      </div>
+      <div class="dashboard-grid">
+        <article class="panel quick-panel"><div class="quick-icon" aria-hidden="true">P</div><p class="eyebrow">YOUR NEXT SPACE</p><h2>Make room for what matters.</h2><p>Choose your arrival time and we’ll show spaces that fit your plans.</p><a class="button" href="#availability">Find an available slot <span aria-hidden="true">→</span></a></article>
+        <article class="panel occupancy-panel"><div class="section-topline compact"><div><p class="eyebrow">LIVE STATUS</p><h2>Current occupancy</h2></div><span class="live-pill"><i></i> Live</span></div><div id="occupancy-list" class="occupancy-list"><p class="empty">Loading status...</p></div></article>
+      </div>
+    </section>
+
+    <section id="lots" class="view">
+      <div class="page-heading"><div><p class="eyebrow">YOUR LOCATIONS</p><h1>Parking Lots</h1><p class="subtle">Explore locations and see how many spaces each one offers.</p></div><button class="button button-outline" data-refresh><span aria-hidden="true">⟳</span> Refresh</button></div>
+      <div id="lots-list" class="lot-grid"><p class="empty">Loading parking lots...</p></div>
+    </section>
+
+    <section id="availability" class="view">
+      <div class="page-heading"><div><p class="eyebrow">SLOT FINDER</p><h1>Find your space.</h1><p class="subtle">Select your parking window to see live availability.</p></div></div>
+      <form id="availability-form" class="panel form-grid availability-form">
+        <label>Arrival date and time<input required name="startTime" type="datetime-local"></label>
+        <label>Departure date and time<input required name="endTime" type="datetime-local"></label>
+        <button class="button" type="submit">Search availability <span aria-hidden="true">→</span></button>
+      </form>
+      <div class="results-heading"><div><h2>Available spaces</h2><p>Choose a green space to continue your booking.</p></div><div class="slot-legend" aria-label="Slot status legend"><span><i class="legend-dot available"></i>Available</span><span><i class="legend-dot selected"></i>Selected</span><span><i class="legend-dot occupied"></i>Occupied</span><span><i class="legend-dot reserved"></i>Reserved</span></div></div>
+      <div id="selected-slot" class="selection-summary" aria-live="polite">Select a slot to see its details.</div>
+      <div id="availability-results" class="slot-grid"></div>
+    </section>
+
+    <section id="book" class="view">
+      <div class="page-heading"><div><p class="eyebrow">RESERVATION</p><h1>Book your parking.</h1><p class="subtle">Choose a location and time. We’ll take care of the rest.</p></div></div>
+      <form id="booking-form" class="panel booking-panel">
+        <div class="form-grid">
+          <label>Your name<input required name="userName" autocomplete="name" placeholder="Alex Morgan" maxlength="100"></label>
+          <label>Vehicle number<input required name="vehicleNumber" autocomplete="off" placeholder="TN01AB1234" maxlength="20"></label>
+          <label>Parking lot<select required id="booking-lot"><option value="">Choose a parking lot</option></select></label>
+          <label>Parking slot<select required name="slotId" id="booking-slot"><option value="">Choose a slot</option></select></label>
+          <label>Booking date<input required name="bookingDate" id="booking-date" type="date"></label>
+          <label>Start time<input required name="startTime" type="time"></label>
+          <label>End time<input required name="endTime" type="time"></label>
+        </div>
+        <div id="booking-selection" class="booking-selection">Select a lot and slot to review your space.</div>
+        <p id="booking-message" class="form-message" role="status"></p>
+        <div class="form-actions"><button class="button" type="submit">Book Parking <span aria-hidden="true">→</span></button><a class="button button-outline" href="#availability">Browse available slots</a></div>
+      </form>
+    </section>
+
+    <section id="bookings" class="view">
+      <div class="page-heading"><div><p class="eyebrow">BOOKING REGISTER</p><h1>Your bookings</h1><p class="subtle">Review reservations and manage arrival, checkout, or cancellation.</p></div><button class="button button-outline" data-refresh><span aria-hidden="true">⟳</span> Refresh</button></div>
+      <div class="panel table-wrap"><table><thead><tr><th>ID</th><th>Customer</th><th>Vehicle</th><th>Slot</th><th>Booking window</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bookings-body"><tr><td colspan="7" class="empty">Loading bookings...</td></tr></tbody></table></div>
+    </section>
+
+    <section id="check-in-out" class="view">
+      <div class="page-heading"><div><p class="eyebrow">VEHICLE LIFECYCLE</p><h1>Check in. Check out.</h1><p class="subtle">Use the booking ID to record arrival or finish a parking session.</p></div></div>
+      <div class="lifecycle-grid">
+        <form id="lifecycle-form" class="panel lifecycle-form">
+          <span class="lifecycle-icon" aria-hidden="true">↗</span><p class="eyebrow">BOOKING ACTION</p><h2>Manage a visit</h2>
+          <label>Booking ID<input required name="bookingId" type="number" min="1" step="1" placeholder="e.g. 104"></label>
+          <p class="form-hint">The vehicle number and parking duration appear after the action is complete.</p>
+          <div class="form-actions"><button class="button" type="submit" name="action" value="checkin">Check In</button><button class="button button-warn" type="submit" name="action" value="checkout">Check Out</button></div>
+          <p id="lifecycle-message" class="form-message" role="status"></p>
+        </form>
+        <article class="panel lifecycle-result"><p class="eyebrow">SESSION DETAILS</p><h2>Visit summary</h2><div id="checkout-result" class="result-content"><p class="empty">Your check-in or checkout details will appear here.</p></div></article>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/js/app.js"></script>
+</body>
+</html>
